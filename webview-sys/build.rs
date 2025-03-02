@@ -11,7 +11,7 @@ fn main() {
         // there is no C/C++ code to compile as in other platforms
         pkg_config::Config::new()
             .atleast_version("2.8")
-            .probe("webkit2gtk-6.0")
+            .probe("webkitgtk-6.0")
             .unwrap();
 
         return;

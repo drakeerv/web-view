@@ -5,12 +5,11 @@ use gio_sys::GAsyncResult;
 use glib_sys::*;
 use gobject_sys::{g_signal_connect_data, GObject};
 use gtk_sys::*;
-use javascriptcore_sys::*;
 use libc::{c_char, c_double, c_int, c_void};
 use std::ffi::CStr;
 use std::mem;
 use std::ptr;
-use webkit2gtk_sys::*;
+use webkit6::*;
 
 type ExternalInvokeCallback = extern "C" fn(webview: *mut WebView, arg: *const c_char);
 
@@ -176,10 +175,9 @@ unsafe extern "C" fn webview_new(
     gtk_container_add(mem::transmute(window), scroller);
     (*w).scroller = scroller;
 
-    let m = webkit_user_content_manager_new();
-    webkit_user_content_manager_register_script_message_handler(
-        m,
-        CStr::from_bytes_with_nul_unchecked(b"external\0").as_ptr(),
+    let m = webkit6::UserContentManager::new();
+    m.add_script(
+        "external".into()
     );
 
     g_signal_connect_data(
@@ -191,7 +189,8 @@ unsafe extern "C" fn webview_new(
         0,
     );
 
-    let webview = webkit_web_view_new_with_user_content_manager(m);
+    // let webview = webkit_web_view_new_with_user_content_manager(m);
+    let webview
     (*w).webview = webview;
     webkit_web_view_load_uri(
         mem::transmute(webview),
